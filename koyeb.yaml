@@ -1,0 +1,11 @@
+name: ev-price-predictor
+services:
+  - name: ev-predictor
+    image:
+      type: docker
+      registry: docker.io/library/python:3.9
+    ports:
+      - name: http
+        port: 8000
+    build:
+      command: bash -c "pip install -r requirements.txt && gunicorn app:app"
