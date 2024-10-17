@@ -1,20 +1,24 @@
 from flask import Flask, render_template, request
-import joblib
 import pandas as pd
+import joblib
 
 app = Flask(__name__)
 
 # Load the regression model
-model = joblib.load('model.pkl')
+with open('model.pkl', 'rb') as file:
+    model = joblib.load(file)
 
-# Function to make predictions based on user input
+# Function to predict the price based on range and horsepower
 def predict_price(range_value, horsepower):
-    # Create a DataFrame for the input features
-    input_features = pd.DataFrame([[range_value, horsepower]], columns=['Range (km)', 'Horsepower'])
-    
+    # Create a DataFrame for input
+    input_data = pd.DataFrame({
+        'Range (km)': [range_value],
+        'Horsepower': [horsepower]
+    })
+
     # Make a prediction
-    predicted_price = model.predict(input_features)
-    return predicted_price[0]  # Return the predicted price
+    predicted_price = model.predict(input_data)[0]
+    return predicted_price
 
 @app.route('/')
 def index():
@@ -23,14 +27,19 @@ def index():
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        # Get the input values from the form
         range_value = float(request.form['range'])
         horsepower = float(request.form['horsepower'])
-        
+
         # Predict the price using the model
         predicted_price = predict_price(range_value, horsepower)
 
-        return render_template('result.html', predicted_price=predicted_price)
+        # Format the predicted price
+        if predicted_price >= 1_00_00_000:  # Greater than or equal to 1 crore
+            formatted_price = f"{predicted_price / 1_00_00000:.2f} Cr"
+        else:
+            formatted_price = f"{predicted_price / 1_00_000:.2f} Lakhs"
+
+        return render_template('result.html', formatted_price=formatted_price)
     except Exception as e:
         return str(e)  # Return the error message for debugging
 
