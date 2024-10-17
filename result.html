@@ -3,28 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prediction Result</title>
-    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>Predicted Price</title>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: 'Red Hat Display', sans-serif;
-            background-color: black;
-            color: white;
-            text-align: center;
+            background-color: #121212;
+            color: #E0E0E0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
         }
-        .result {
-            margin: 50px auto;
-            padding: 20px;
-            width: 300px;
-            background-color: rgba(0, 0, 0, 0.5);
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .price-container {
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
-            box-shadow: 0px 8px 32px rgba(0, 255, 0, 0.37);
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 128, 0, 0.3);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .price-container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 40px rgba(0, 128, 0, 0.4);
+        }
+
+        .price {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #00E676; /* Light Green */
+        }
+
+        .icon {
+            margin-top: 1rem;
+            font-size: 2rem;
+            color: #00E676;
+        }
+
+        a {
+            text-decoration: none;
+            color: #00E676;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: #AEE571; /* Lighter green on hover */
         }
     </style>
 </head>
 <body>
-    <div class="result">
-        <h1>Predicted Price: ₹{{ price }}</h1>
+    <h1>Predicted Electric Car Price</h1>
+    <div class="price-container">
+        <p class="price">₹{{ formatted_price }}</p>
+        <i class="fas fa-car icon"></i>
     </div>
+    <a href="/">Go Back</a>
 </body>
 </html>
