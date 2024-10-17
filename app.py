@@ -1,11 +1,20 @@
-from flask import Flask, request, render_template
-import pickle
+from flask import Flask, render_template, request
+import joblib
+import pandas as pd
 
 app = Flask(__name__)
 
 # Load the regression model
-with open('model.pkl', 'rb') as file:
-    model = pickle.load(file)
+model = joblib.load('model.pkl')
+
+# Function to make predictions based on user input
+def predict_price(range_value, horsepower):
+    # Create a DataFrame for the input features
+    input_features = pd.DataFrame([[range_value, horsepower]], columns=['Range (km)', 'Horsepower'])
+    
+    # Make a prediction
+    predicted_price = model.predict(input_features)
+    return predicted_price[0]  # Return the predicted price
 
 @app.route('/')
 def index():
@@ -13,17 +22,17 @@ def index():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    # Get form data
-    range_km = float(request.form['range'])
-    horsepower = float(request.form['horsepower'])
-    
-    # Prepare input data for model
-    features = [[range_km, horsepower]]
-    
-    # Make prediction
-    predicted_price = model.predict(features)[0]
-    
-    return render_template('result.html', price=predicted_price)
+    try:
+        # Get the input values from the form
+        range_value = float(request.form['range'])
+        horsepower = float(request.form['horsepower'])
+        
+        # Predict the price using the model
+        predicted_price = predict_price(range_value, horsepower)
+
+        return render_template('result.html', predicted_price=predicted_price)
+    except Exception as e:
+        return str(e)  # Return the error message for debugging
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8000)
+    app.run(host="0.0.0.0", port=8000)
